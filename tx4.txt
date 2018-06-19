@@ -1,0 +1,1128 @@
+unit UnitForTestImage;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, ComCtrls, Spin, Buttons, TeeProcs, TeEngine, Chart,
+  Series, PaletteUnit, ToolWin, TeeFunci, Frame1Unit, Menus, jpeg,
+  SDL_plot3d;
+
+type
+  TForm1 = class(TForm)
+    OpenDialog1: TOpenDialog;
+    Timer1: TTimer;
+    GroupBox2: TGroupBox;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    Chart2: TChart;
+    Series4: TFastLineSeries;   { Oscilliscope }
+    Series5: TPointSeries;      { point }
+    Chart1: TChart;
+    Image5: TImage;
+    Image6: TImage;
+    Series2: TFastLineSeries;
+    Series3: TFastLineSeries;
+    GroupBox1: TGroupBox;
+    Label3: TLabel;
+    Label4: TLabel;
+    PosY: TEdit;
+    PosX: TEdit;
+    PaletPanel: TImage;
+    TeeFunction1: TLowTeeFunction;
+    Chart3: TChart;
+    Spectr2Panel: TImage;
+    Series6: TLineSeries;
+    MainMenu1: TMainMenu;
+    File1: TMenuItem;
+    Load1: TMenuItem;
+    N1: TMenuItem;
+    SaveImage: TMenuItem;
+    SaveBitmap: TMenuItem;
+    N3: TMenuItem;
+    Exit1: TMenuItem;
+    Setting1: TMenuItem;
+    N4: TMenuItem;
+    Help1: TMenuItem;
+    N5: TMenuItem;
+    About1: TMenuItem;
+    TabSheet3: TTabSheet;
+    ToolBar1: TToolBar;
+    ToolButton2: TToolButton;
+    SpeedButton1: TSpeedButton;
+    SpeedButton2: TSpeedButton;
+    SpeedButton3: TSpeedButton;
+    ToolButton1: TToolButton;
+    SpeedButton4: TSpeedButton;
+    StatusBar1: TStatusBar;
+    ToolButton3: TToolButton;
+    SpeedButton5: TSpeedButton;
+    SpeedButton6: TSpeedButton;
+    Timer2: TTimer;
+    ToolButton4: TToolButton;
+    SpeedButton7: TSpeedButton;
+    GroupBox5: TGroupBox;
+    HistoCheck: TCheckBox;
+    ScopeCheck: TCheckBox;
+    ComboBox2: TComboBox;
+    CheckBox2: TCheckBox;
+    Series1: TBarSeries;
+    SaveDialog1: TSaveDialog;
+    GroupBox3: TGroupBox;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    CheckBox1: TCheckBox;
+    GroupBox4: TGroupBox;
+    ComboBox1: TComboBox;
+    AutoCheck: TCheckBox;
+    Palette_16: TCheckBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Edit4: TEdit;
+    Edit5: TEdit;
+    Button1: TButton;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
+    Label6: TLabel;
+    PosT: TEdit;
+    SpinEdit4: TSpinEdit;
+    TrackBar2: TTrackBar;
+    SpeedButton8: TSpeedButton;
+    SpeedButton9: TSpeedButton;
+    Edit_max_temp: TEdit;
+    Edit_min_temp: TEdit;
+    SpeedButton10: TSpeedButton;
+    P3D: TPlot3D;
+    SpeedButton11: TSpeedButton;
+    Label_area: TLabel;
+    Main_Image: TImage;
+    Label_temp: TLabel;
+    Edit_scale: TEdit;
+    Label_Scale: TLabel;
+    Label_frame1: TLabel;
+    Label_frame2: TLabel;
+    Label_frame3: TLabel;
+    Label_frame4: TLabel;
+    Button_Frame: TButton;
+    Label5: TLabel;
+    PosZ: TEdit;
+    procedure DrawSpectr;
+    procedure PutFrame(Sender: TObject);
+    procedure PaintFrame(Sender: TObject);
+
+    procedure Main_ImageMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure Init(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure Main_ImageMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Main_ImageMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Image6MouseMove(Sender: TObject; Shift: TShiftState; X,
+           Y: Integer);
+    procedure Image5MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure PaletPanelMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure PaletPanelMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure PaletPanelMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure ComboBox1Change(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Exit1Click(Sender: TObject);
+    procedure Load1Click(Sender: TObject);
+    procedure Chart1Scroll(Sender: TObject);
+    procedure SpeedButton6Click(Sender: TObject);
+    procedure SpeedButton5Click(Sender: TObject);
+    procedure Timer2Timer(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
+    procedure ComboBox2Change(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SaveImageClick(Sender: TObject);
+    procedure SaveBitmapClick(Sender: TObject);
+    procedure AutoCheckClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure SpinEdit2Change(Sender: TObject);
+    procedure TrackBar2Change(Sender: TObject);
+    procedure SpeedButton8Click(Sender: TObject);
+    procedure SpeedButton9Click(Sender: TObject);
+    procedure SpeedButton10Click(Sender: TObject);
+    procedure SpeedButton11Click(Sender: TObject);
+    procedure Button_FrameClick(Sender: TObject);
+    procedure FormDblClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+const Timer_1_val : array[0..5] of integer = (40,50,66,100,200,500);
+
+var
+  Form1: TForm1;
+  dat : record            { ?????? ??? ??????????? }
+          header: THeaderArray;
+              d : TFrameArray;
+        end;
+
+  dat2: record            { ?????? ??? ???????????-2 }
+          header: THeaderArray;
+              d : TFrameArray;
+        end;
+
+  hair : record
+          x0, y0 : integer;
+          hor, vert : boolean;
+  end;
+
+
+  dati : record
+           header: THeaderArray;
+               d : TDarkArray;
+         end;
+
+  plot8 : array[0..4095] of integer;
+
+
+  b, b2, spectr1, spectr2 : TBitMap;
+
+  zmpos: byte;
+  PaletteGood, MoveMouse: boolean;
+
+var tmp : TShiftState;
+
+     y0, x0: integer;
+
+    MyPal : TMyPalette;
+    MyDat : TMyDatas;
+    MyFrame : TMyFrame;
+
+
+    MovePalet : boolean;
+    PaletPos : integer;
+
+    minp, maxp : integer;
+
+    T30, T35 : integer;
+    dt_k : double;
+
+
+implementation
+
+uses BigFormUnit;
+{$R *.DFM}
+
+Procedure TForm1.DrawSpectr;
+var x, y : integer;
+    k : longint;
+    p : PARGB;
+begin
+   for y:=1 to 10 do
+    begin
+     p:= spectr1.scanline[y];
+       for x:=0 to 255 do
+       begin
+         k:=x*16;
+         p[x].r:= MyPal.UsedPalette.r[k];
+         p[x].g:= MyPal.UsedPalette.g[k];
+         p[x].b:= MyPal.UsedPalette.b[k];
+       end;
+    end;
+   PaletPanel.canvas.draw(0,0,spectr1);
+
+   for y:=0 to Spectr2Panel.Height-1 do
+    begin
+     p:= spectr2.scanline[y];
+     k:= Round((Spectr2Panel.Height-1 - y)*$1000/Spectr2Panel.Height);
+       if MyPal.UsedPalette.Pal_16 then
+         k:=k and $F00 + $80;
+
+       for x:=1 to 9 do
+       begin
+         p[x].r:= MyPal.MainPalette.r[k];
+         p[x].g:= MyPal.MainPalette.g[k];
+         p[x].b:= MyPal.MainPalette.b[k];
+       end;
+    end;
+    Spectr2Panel.canvas.draw(0,0,spectr2);
+
+    Series6.Clear;
+    {
+    Series6.AddXY(1,(30+(MyPal.UsedPalette.min-T30)/dt_k),'',clTeeColor);
+    Series6.AddXY(1,(35+(MyPal.UsedPalette.max-T35)/dt_k),'',clTeeColor);
+
+
+    Series6.AddXY(1,27,'',clTeeColor);
+    Series6.AddXY(1,53.5,'',clTeeColor);
+     }
+
+    With Chart3.RightAxis do
+    begin
+      Automatic := False;
+      AutomaticMaximum := False;
+      AutomaticMinimum := False;
+      Minimum := (30+(MyPal.UsedPalette.min-T30)/dt_k);
+      Maximum := (35+(MyPal.UsedPalette.max-T35)/dt_k);
+    end;
+
+    Image6.Left:=(MyPal.UsedPalette.max div 16)+26;
+    Image5.Left:=(MyPal.UsedPalette.min div 16)+23;
+end;
+
+procedure TForm1.PutFrame(Sender: TObject);
+var x, y, z2 : integer;
+    z :real;
+          p, p_sub : PARGB;
+          for_shl : byte;
+begin
+
+//  if ScopeCheck.Checked then
+  begin
+   if hair.hor then
+     begin
+       Series4.Clear;
+       for x:=0 to 319 do
+        begin
+          z:= (30+(dat.d[hair.y0,x]-T30)/dt_k);
+          Series4.Add(z,'',clTeeColor);
+        end;
+       Series5.Clear;
+       z:= (30+(dat.d[hair.y0,hair.x0]-T30)/dt_k);
+       Series5.AddXY(hair.x0,z,'',clTeeColor);
+     end;
+
+   if hair.vert then
+     begin
+       Series4.Clear;
+       for y:=0 to 239 do
+         begin
+           z:= (30+(dat.d[hair.y0,hair.x0]-T30)/dt_k);
+           Series4.Add(z,'',clTeeColor);
+         end;
+       Series5.Clear;
+       z:= (30+(dat.d[hair.y0,hair.x0]-T30)/dt_k);
+       Series5.AddXY(hair.y0,z,'',clTeeColor);
+     end;
+  end;  { ScopeCheck.Checked}
+
+
+  for y:=0 to 239 do
+    begin
+      p:= b.scanline[y];
+      p_sub := b2.scanline[y];
+
+      if  (y=hair.y0) and hair.hor then
+       begin
+         for x:=0 to 319 do
+         begin
+           z:=dat.d[y,x];
+           p[x].r:= MyPal.UsedPalette.r[Round(z)] xor $FF;
+           p[x].g:= MyPal.UsedPalette.g[Round(z)] xor $FF;
+           p[x].b:= MyPal.UsedPalette.b[Round(z)];
+         end;
+         continue;
+       end;
+
+       for x:=0 to 319 do
+       begin
+         z:=dat.d[y,x]+8;
+         p[x].r:= MyPal.UsedPalette.r[Round(z)];
+         p[x].g:= MyPal.UsedPalette.g[Round(z)];
+         p[x].b:= MyPal.UsedPalette.b[Round(z)];
+
+
+         if hair.vert and (x=hair.x0) then
+         begin
+           p[x].r:= MyPal.UsedPalette.r[Round(z)] xor $FF;
+           p[x].g:= MyPal.UsedPalette.g[Round(z)] xor $FF;
+           p[x].b:= MyPal.UsedPalette.b[Round(z)];
+         end;
+       end;
+    end;
+
+    Main_Image.canvas.draw(0,0,b);
+end;
+
+procedure plot3d(startv, starth: real; x,y:integer);
+var i,k:integer ;
+new_temp,max,min :real;
+begin;
+
+  form1.P3d.SuppressPaint := true;
+  form1.P3d.GridMat.Resize(47,42);   // max size of matrix : 2000 elements 
+
+  max:=0;
+  min:=1000;
+
+  for i:=1 to 47 do
+  begin;
+    for k:=1 to 42 do
+    begin;
+      new_temp:= (30+(dat.d[trunc(k*startv+y),trunc(i*starth+x)]-T30)/dt_k);
+      if (new_temp > max) then max:=new_temp;
+      if (new_temp < min) and (new_temp<>0) then min:=new_temp;
+      form1.P3d.GridMat[i,k] := new_temp;
+    end;
+  end;
+
+  max:=Trunc(max)+1;
+  form1.P3D.ColorScaleHigh:=max;
+  if min < 28 then
+    form1.P3D.SetRange(0,100,0,100,min-0.5,max)
+  else if  (min >= 28) then
+    form1.P3D.SetRange(0,100,0,100,min-4,max);
+  form1.P3d.SuppressPaint := false;
+end;
+
+procedure TForm1.PaintFrame(Sender: TObject);
+var   q : boolean;
+     x, y, z, t00 : integer;
+begin
+  q:=MyFrame.GrabFrame;
+
+  if HistoCheck.Checked then
+   begin
+     FillChar(plot8, SizeOf(plot8),0);
+     for y:=0 to 239 do
+       for x:=0 to 319 do
+         begin
+           z:=MyFrame.frame.dat[y,x]+t00;
+           z:=z-MyFrame.temn.d[y,x];
+           if z<0 then z:=0;
+           dat.d[y,x]:= z;
+           inc(plot8[z]);
+         end;
+
+     minp:=0;
+     maxp:=4095;
+     for x:=1 to 4095 do if plot8[x]=0 then minp:=x else break;
+     for x:=4095 downto minp+1 do  if plot8[x]=0 then maxp:=x else break;
+     if maxp<4084 then maxp:=maxp+10;
+     if minp>10 then minp:=minp-10;
+     AutoCheckClick(Sender);
+
+     Series1.Clear;
+     for x:=0 to 4095 do
+       begin
+         Series1.Add(plot8[x]/7.4,'',clTeeColor);
+       end;
+   end    { histogramme }
+
+  else for y:=0 to 239 do     {without hostogramme }
+         for x:=0 to 319 do
+           dat.d[y,x]:=MyFrame.frame.dat[y,x]-MyFrame.temn.d[y,x];
+
+  PutFrame(Sender);
+end;
+
+procedure TForm1.Main_ImageMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var x1, min, min2, max, i, j,area,Top_koef : integer;
+    k,Scale :real;
+
+{case Integer of
+    0: (Left, Top, Right, Bottom: Integer);    1: (TopLeft, BottomRight: TPoint);end;
+}
+
+begin
+    if not MoveMouse then exit;
+    if y>239 then y:=239;
+    if y<0 then y:=0;
+    if x>319 then x:=319;
+    if x<0 then x:=0;
+
+    PosX.Text:=' '+IntToStr(X);
+    PosY.Text:=' '+IntToStr(Y);
+    PosZ.Text:=' '+IntToStr(dat.d[y,x]);
+
+    hair.y0:=y;
+    hair.x0:=x;
+    Scale := strtofloat(Form1.Edit_scale.Text);
+    plot3d(Scale,Scale,x,y);
+
+min:=dat.d[0,0];
+max:=dat.d[0,0];
+  for i:=0 to 239 do
+    for j:=0 to 319 do
+      begin
+           if min > dat.d[i,j] then min:=  dat.d[i,j];
+           if max < dat.d[i,j] then max:=  dat.d[i,j];
+      end;
+
+   Chart2.LeftAxis.Maximum:= (30+(max-T30)/dt_k)*1.01;
+   Chart2.LeftAxis.Minimum:= (30+(min-T30)/dt_k)*0.99;
+
+    Series4.Clear;
+
+    if hair.hor then
+    for x1:=1 to 319 do
+     begin
+       k:= (30+(dat.d[y,x1]-T30)/dt_k);
+       Series4.Add(k,'',clTeeColor);
+     end;
+
+    if hair.vert then
+    for x1:=1 to 239 do
+     begin
+       k:= (30+(dat.d[x1,x]-T30)/dt_k);
+       Series4.Add(k,'',clTeeColor);
+     end;
+
+    Series5.Clear;
+    k:= (30+(dat.d[y,x]-T30)/dt_k);
+    if hair.hor then
+       Series5.AddXY(x,k,'',clTeeColor)
+    else Series5.AddXY(y,k,'',clTeeColor);
+
+min2:=max;
+area := 0;
+  for i:=0 to 239 do
+    for j:=0 to 319 do
+      begin
+           if (min2 > dat.d[i,j]) and (dat.d[i,j] <> 0)  then min2:=  dat.d[i,j];
+           if  dat.d[i,j]> min then inc(area);
+      end;
+    label_area.Caption:= 'Ieiuaau: ' + inttostr(area);
+    Edit_max_temp.Text:=' '+FloatToStrF(30+(max-T30)/dt_k,ffFixed,4,2) + ' °C';
+    Edit_min_temp.Text:=' '+FloatToStrF(30+(min2-T30)/dt_k,ffFixed,4,2) + ' °C';
+
+    PosT.Text:=' '+FloatToStrF(k{30+(k-T30)/dt_k},ffFixed,4,2);
+
+    { Iaaienu n oaiia?aoo?ie iaa eo?ni?ii }
+    form1.label_temp.caption:=FloatToStrF((30+(dat.d[y,x]-T30)/dt_k),ffFixed,4,2); // label on image
+    form1.label_temp.left:=x+4;
+    form1.label_temp.top:=y-4;
+
+    { ?aiea }
+    Top_koef:=17;
+    form1.label_frame1.left := x;
+    form1.label_frame1.Top := y+Top_koef;
+    form1.label_frame1.Width := trunc(47*Scale);
+    form1.label_frame1.Height := 1;
+
+    form1.label_frame2.left := x;
+    form1.label_frame2.Top := trunc(y+42*Scale+Top_koef);
+    form1.label_frame2.Width := trunc(47*Scale);
+    form1.label_frame2.Height := 1;
+
+    form1.label_frame3.left := x;
+    form1.label_frame3.Top := y+Top_koef;
+    form1.label_frame3.Width := 1;
+    form1.label_frame3.Height := trunc(42*Scale);
+
+    form1.label_frame4.left := trunc(x+47*Scale);
+    form1.label_frame4.Top := y+Top_koef;
+    form1.label_frame4.Width := 1;
+    form1.label_frame4.Height := trunc(42*Scale);
+end;
+
+{===============================================}
+
+procedure TForm1.Init(Sender: TObject);
+var t: integer;
+
+begin
+//  GroupBox1.Width:=Xm+4;
+  PosX.Ctl3D:=False;
+  PosY.Ctl3D:=False;
+  PosZ.Ctl3D:=False;
+  PosT.Ctl3D:=False;
+  PosX.Text:=' 0';
+  PosY.Text:=' 0';
+  PosZ.Text:=' 0';
+  Edit_max_temp.Text:=' ';
+  Edit_min_temp.Text:=' ';
+
+  label_frame1.Visible:=false;
+  label_frame2.Visible:=false;
+  label_frame3.Visible:=false;
+  label_frame4.Visible:=false;
+  Move(dat,dat2,SizeOf(dat));
+
+   PaletteGood:=false;
+
+    T30:= 225;
+    T35:= 370;
+    dt_k:= (T35-T30)/(35-30);
+//    dt_k:=1;
+
+
+   MyPal.InitPalettes;
+   MyPal.MakeMainPalette(0);
+   MyPal.MakeUsedPalette(0,4095);
+
+   b:=TBitMap.Create;
+   b.pixelformat:=pf24bit;
+   b.width:=Main_Image.Width;
+   b.height:=Main_Image.Height;
+
+   b2:=TBitMap.Create;
+   b2.pixelformat:=pf24bit;
+   b2.width:=Main_Image.Width;
+   b2.height:=Main_Image.Height;
+
+   spectr1:=TBitMap.Create;
+   spectr1.pixelformat:=pf24bit;
+   spectr1.width:=PaletPanel.Width;
+   spectr1.height:=PaletPanel.Height;
+
+   spectr2:=TBitMap.Create;
+   spectr2.pixelformat:=pf24bit;
+   spectr2.width := Spectr2Panel.Width;
+   spectr2.height:= Spectr2Panel.Height;
+
+   DrawSpectr;
+
+
+  MoveMouse:=false;
+  MovePalet:= false;
+
+  ComboBox1.ItemIndex:=0;
+  ComboBox2.ItemIndex:=1;
+  hair.y0:=0;
+  hair.x0:=0;
+  hair.hor:=RadioButton1.Checked;
+  hair.vert:=RadioButton2.Checked;
+
+  t:=MyFrame.Init;
+
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+    b.free;
+    b2.free;
+    spectr1.free;
+    spectr2.free;
+    MyFrame.Close;
+end;
+
+
+///////////
+
+procedure TForm1.Main_ImageMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+   MoveMouse:=true;
+   hair.y0:=y;
+   hair.x0:=x;
+end;
+
+procedure TForm1.Main_ImageMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+   MoveMouse:=false;
+   hair.y0:=y;
+   hair.x0:=x;
+end;
+
+procedure TForm1.PaletPanelMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+   MovePalet:=true;
+   paletPos:=x;
+end;
+
+procedure TForm1.PaletPanelMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+   MovePalet:=false;
+end;
+
+procedure TForm1.PaletPanelMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+var k: integer;
+begin
+  if not MovePalet then Exit;
+  k:=x-PaletPos;
+
+  MyPal.MakeUsedPalette(MyPal.UsedPalette.min+k,MyPal.UsedPalette.max+k);
+  DrawSpectr;
+  PaletPos:=x;
+end;
+
+////////////
+
+
+procedure TForm1.Image6MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var k : integer;
+begin
+  if Shift=[ssLeft] then
+   begin
+     if (Image6.Left+x-4)<=(Image5.Left+7) then exit;
+     Image6.Left:=Image6.Left+x-4;
+     if Image6.Left>281 then Image6.Left:=281;
+     k:=Image6.Left-26;
+
+
+     if k>319 then k:=319;
+     MyPal.MakeUsedPalette(MyPal.UsedPalette.min,k*16);
+     DrawSpectr;
+
+     Series2.Clear;
+     begin
+  //     Series2.AddXY(MyPal.UsedPalette.min+TrackBar3.Position,0,'',clTeeColor);
+  //     Series2.AddXY(MyPal.UsedPalette.min+TrackBar3.Position,5,'',clTeeColor);
+     end;
+
+     Series3.Clear;
+     begin
+  //     Series3.AddXY(k*16+TrackBar3.Position,0,'',clTeeColor);
+  //     Series3.AddXY(k*16+TrackBar3.Position,5,'',clTeeColor);
+     end;
+   end;
+end;
+
+procedure TForm1.Image5MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var k, n : integer;
+begin
+
+   if Shift=[ssLeft] then
+   begin
+     if (Image5.Left+x-6)>=(Image6.Left-7) then exit;
+
+     Image5.Left:=Image5.Left+x-6;
+
+     if Image5.Left<23 then Image5.Left:=23;
+
+     k:=Image5.Left-23;
+
+
+     if k<0 then k:=0;
+     MyPal.MakeUsedPalette(k*16,MyPal.UsedPalette.max);
+     DrawSpectr;
+
+     Series2.Clear;
+     begin
+  //     Series2.AddXY(k*16+TrackBar3.Position,0,'',clTeeColor);
+  //     Series2.AddXY(k*16+TrackBar3.Position,5,'',clTeeColor);
+     end;
+   end;
+end;
+
+
+procedure TForm1.ComboBox1Change(Sender: TObject);
+begin
+    MyPal.UsedPalette.Pal_16:=Palette_16.Checked;
+    MyPal.MakeMainPalette(ComboBox1.ItemIndex);
+    MyPal.MakeUsedPalette(MyPal.UsedPalette.min, MyPal.UsedPalette.max);
+    DrawSpectr;
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+   Form2.Show;
+end;
+
+procedure TForm1.Exit1Click(Sender: TObject);
+begin
+   Form1.Close;
+end;
+
+procedure visualNoise;
+var min,max,i,k,range,n:integer ;
+average, dispersion,sum, stDeviation :real;
+
+begin
+min:=dat.d[0,0];
+max:=dat.d[0,0];
+sum:= 0;
+n:= 0;
+  for i:=0 to 239 do
+    for k:=0 to 319 do
+      begin
+           if min > dat.d[i,k] then min:=  dat.d[i,k];
+           if max < dat.d[i,k] then max:=  dat.d[i,k];
+           sum:=sum + dat.d[i,k];
+           inc(n);
+      end;
+range:=max-min;
+average:= sum/n;
+//ShowMessage(IntToStr(min)+'  '+FloatToStr(average)+'  '+IntToStr(max)+'  '+FloatToStr(sum)+'  '+IntToStr(n));
+sum:=0;
+  for i:=0 to 239 do
+    for k:=0 to 319 do
+      begin
+         sum:= sum + (dat.d[i,k]*dat.d[i,k] - average*average);
+      end;
+dispersion:= sum / n;
+stDeviation:= sqrt(dispersion);
+  for i:=0 to 239 do
+    for k:=0 to 319 do
+      begin
+         if (dat.d[i,k]<(average - 3*stDeviation)) or (dat.d[i,k] > (average + 3*stDeviation)) then dat.d[i,k]:= 0;
+      end;
+//ShowMessage(FloatToStr(30+(average-T30)/dt_k));
+end;
+
+procedure TForm1.Load1Click(Sender: TObject);
+var F : file;
+    i, k, m, ymin, ymax, max : integer;
+    xmax , xmin, x,y ,counts : integer;
+
+begin
+ MoveMouse:=false;
+ if OpenDialog1.Execute then
+  begin
+    Timer1.Enabled:=false;
+
+
+    AssignFile(F, OpenDialog1.FileName);
+    Reset(F, 8);
+    BlockRead(F, MyDat, 21669, counts);
+    CloseFile(F);
+
+    for i:=0 to 4095 do plot8[i]:=0;
+ //   for i:=0 to 319 do plot16[i]:=0;
+    ymin:=0;    ymax:=0;
+    xmin:=0;    xmax:=0;
+
+   { if counts=21669 then
+      for i:=0 to 239 do
+       for k:=0 to 319 do
+          dat.d[i,k]:=MyDat.Dark[i,k]
+     else if counts=18624 then }
+      for i:=0 to 239 do
+       for k:=0 to 319 do
+          dat.d[i,k]:=MyDat.Frame[i,k] ;
+
+visualNoise;
+//min:=dat.d[0,0];
+max:=dat.d[0,0];
+  for i:=0 to 289 do
+    for k:=0 to 319 do
+      begin
+           //if min > dat.d[i,k] then min:=  dat.d[i,k];
+           if max < dat.d[i,k] then max:=  dat.d[i,k];
+      end;
+max := Round(30+(max-T30)/dt_k);
+MyPal.MakeUsedPalette(0,max*23);
+    for i:=0 to 289 do
+     for k:=0 to 319 do
+      begin
+        inc(plot8[dat.d[i,k]]);
+      end;
+
+{
+   for i:=0 to 510 do
+     begin
+      if (plot8[i]>0) then xmax:=i;
+      if (plot8[511-i]>0) then xmin:=511-i;
+
+      if ymin>plot8[i] then ymin:=plot8[i];
+      if ymax<plot8[i] then ymax:=plot8[i];
+     end;
+}
+   //  Chart1.BottomAxis.SetMinMax( 0, xmax+20 );
+
+     minp:=0;
+     maxp:=4095;
+     for x:=1 to 4095 do
+       if plot8[x]=0 then minp:=x else break;
+     for x:=4095 downto minp+1 do
+       if plot8[x]=0 then maxp:=x else break;
+     if maxp<4084 then maxp:=maxp+10;
+     if minp>10 then minp:=minp-10;
+     AutoCheckClick(Sender);
+
+
+   Series1.Clear;
+   for i:=0 to 4095 do
+      begin
+       Series1.Add(plot8[i]/742.4,'',clTeeColor);
+      end;
+
+{   Series2.Clear;
+     begin
+       Series2.AddXY(1,0,'',clTeeColor);
+       Series2.AddXY(1,10,'',clTeeColor);
+     end;
+
+   Series3.Clear;
+     begin
+       Series3.AddXY(500,0,'',clTeeColor);
+       Series3.AddXY(500,10,'',clTeeColor);
+     end;
+}
+
+     Timer2.Enabled:=true;
+     SpeedButton6.Enabled:=true;
+     StatusBar1.SimpleText:=' '+OpenDialog1.FileName+' ';
+  end;
+end;
+
+
+
+procedure TForm1.Chart1Scroll(Sender: TObject);
+begin
+ if Chart1.BottomAxis.Minimum<0 then Chart1.BottomAxis.Minimum:=0;
+ if Chart1.BottomAxis.Maximum>4095 then Chart1.BottomAxis.Maximum:=4095;
+end;
+
+procedure TForm1.SpeedButton6Click(Sender: TObject);
+begin
+   Timer1.Enabled:=SpeedButton6.Down;
+ //  SpeedButton6.Enabled:=false;
+end;
+
+procedure TForm1.SpeedButton5Click(Sender: TObject);
+var q : boolean;
+begin
+   q:=MyFrame.GetDarkFrame;
+end;
+
+procedure TForm1.Timer2Timer(Sender: TObject);
+begin
+    PutFrame(Sender);
+end;
+
+procedure TForm1.SpeedButton7Click(Sender: TObject);
+begin
+    Form2.Show;
+end;
+
+procedure TForm1.ComboBox2Change(Sender: TObject);
+begin
+   Timer1.Interval:= Timer_1_val[ComboBox2.ItemIndex];
+end;
+
+
+procedure TForm1.CheckBox1Click(Sender: TObject);
+begin
+   if CheckBox1.Checked then
+     begin
+       hair.hor:=RadioButton1.Checked;
+       hair.vert:=RadioButton2.Checked;
+     end
+   else
+     begin
+       hair.hor:=false;
+       hair.vert:=false;
+     end;
+end;
+
+procedure TForm1.SpeedButton2Click(Sender: TObject);
+begin
+   Timer1.Enabled:=false;
+
+
+   Timer1.Enabled:=true;
+end;
+
+procedure TForm1.SpeedButton3Click(Sender: TObject);
+begin
+//  MoveMouse:=false;
+
+end;
+
+procedure TForm1.SaveImageClick(Sender: TObject);
+var F : file;
+    b : boolean;
+
+begin
+  b:=Timer1.Enabled;
+  Timer1.Enabled:=false;
+//  MoveMouse:=false;
+  if SaveDialog1.Execute then
+   begin
+     AssignFile(F, SaveDialog1.FileName);
+     Rewrite(F, 8);
+     with dat.header do
+       begin
+         image_type[0]:='I';
+         image_type[1]:='M';
+         image_type[2]:='G';
+         image_type[3]:='3';
+         format[2]:=PZS_l;
+         format[3]:=PZS_h;
+       end;
+     BlockWrite(F, Dat, 19264);
+     CloseFile(F);
+   end;
+
+  Timer1.Enabled:=b;
+end;
+
+procedure TForm1.SaveBitmapClick(Sender: TObject);
+var SourceRect, DestRect: TRect;
+    x, y, dx, dy : integer;
+    b: boolean;
+    Bitmap: TBitmap;
+begin
+
+  b:=CheckBox1.Checked;
+  CheckBox1.Checked:=false;
+  PutFrame(Sender);
+  Application.ProcessMessages;
+//  Panel1.Hide;
+
+  x:=444;
+  y:=295;
+  dx:=256;
+  dy:=290;
+  Bitmap := TBitmap.Create;
+  Bitmap.Width:=444;
+  Bitmap.Height:=295;
+
+  SourceRect := Rect(GroupBox1.Left+1, GroupBox1.Top+14, GroupBox1.Left+4+dx, GroupBox1.Top+16+dy );
+  DestRect := Rect(1,1,x-62,y);
+  Bitmap.Canvas.CopyRect(DestRect,Form1.Canvas,SourceRect);
+
+  x:=Chart3.Left+GroupBox1.Left;
+  y:=Chart3.Top+GroupBox1.Top+8;
+  dx:= Chart3.Width;
+  dy:= Chart3.Height-16;
+
+  SourceRect:=Rect(x,y, x+dx, y+dy);
+  DestRect := Rect( 380, 1, 380 + dx, dy-2);
+  Bitmap.Canvas.CopyRect(DestRect,Form1.Canvas, SourceRect);
+
+  if SaveDialog1.Execute then
+  begin
+     Bitmap.SaveToFile(ChangeFileExt(SaveDialog1.FileName,'.BMP'));
+     ShowMessage(ChangeFileExt(SaveDialog1.FileName,'.BMP') + ' is saved');
+  end;
+  Bitmap.Free;
+  CheckBox1.Checked:=b;
+end;
+
+procedure TForm1.AutoCheckClick(Sender: TObject);
+begin
+   if AutoCheck.Checked then
+    begin
+       MyPal.MakeUsedPalette(minp,maxp);
+       DrawSpectr;
+    end
+   else
+    begin
+    //   MyPal.MakeUsedPalette(0,4095);
+       DrawSpectr;
+    end
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+    T30:= StrToInt(Edit4.Text);
+    T35:= StrToInt(Edit5.Text);
+    dt_k:= (T35-T30)/(35-30);
+
+
+end;
+
+
+
+procedure TForm1.SpinEdit2Change(Sender: TObject);
+begin
+  DrawSpectr;
+  Chart3.Refresh;
+end;
+
+
+procedure TForm1.TrackBar2Change(Sender: TObject);
+var tmp : integer;
+begin
+  tmp:=TrackBar2.Position*4+200;
+  Edit4.Text:=IntToStr(tmp);
+  tmp:=tmp+ (SpinEdit4.Value div 2);
+  Edit5.Text:=IntToStr(tmp);
+  Button1Click(Sender);
+end;
+
+procedure MinMax(extreme : String);
+var min,max,i,k,range:integer ;
+percent:real;
+initialValue: array [0..289,0..319] of integer;
+
+begin
+min:=10000{dat.d[0,0]};
+max:=dat.d[0,0];
+  for i:=0 to 289 do
+    for k:=0 to 319 do
+      begin
+           if (min > dat.d[i,k]) and (dat.d[i,k] <> 0) then min:= dat.d[i,k];
+           if max < dat.d[i,k] then max:=  dat.d[i,k];
+           initialValue[i,k]:=  dat.d[i,k];
+      end;
+range:=max-min;
+percent:=0.2*range;
+
+if extreme = 'max' then
+  for i:=0 to 289 do
+    for k:=0 to 319 do
+      begin
+           if (dat.d[i,k] < (max-percent)) then dat.d[i,k]:=0;
+      end;
+if extreme = 'min' then
+  for i:=0 to 289 do
+    for k:=0 to 319 do
+      begin
+           if (dat.d[i,k] > (min+percent)) then dat.d[i,k]:=0;
+      end;
+end;
+
+procedure TForm1.SpeedButton8Click(Sender: TObject);
+begin
+ MinMax('max');
+end;
+
+procedure TForm1.SpeedButton9Click(Sender: TObject);
+begin
+ MinMax('min');
+end;
+
+procedure TForm1.SpeedButton10Click(Sender: TObject);
+var min, max, i,k,range:integer ;
+percent :real;
+begin
+min:=10000;
+max:=dat.d[0,0];
+  for i:=0 to 289 do
+    for k:=0 to 319 do
+      begin
+           if (min > dat.d[i,k]) and (dat.d[i,k] <> 0) then min:=  dat.d[i,k];
+           if max < dat.d[i,k] then max:=  dat.d[i,k];
+      end;
+range:=max-min;
+percent:=0.11*range;
+
+min := min + Round(percent);
+  for i:=0 to 289 do
+    for k:=0 to 319 do
+      begin
+           if dat.d[i,k] < min then dat.d[i,k] := 0;
+      end;
+end;
+
+procedure TForm1.SpeedButton11Click(Sender: TObject);
+begin;
+  Form1.label_frame1.Visible:=false;
+  Form1.label_frame2.Visible:=false;
+  Form1.label_frame3.Visible:=false;
+  Form1.label_frame4.Visible:=false;
+  plot3d(5.71,6.8,0,0);
+end;
+
+procedure TForm1.Button_FrameClick(Sender: TObject);
+begin
+  label_frame1.Visible:=true;
+  label_frame2.Visible:=true;
+  label_frame3.Visible:=true;
+  label_frame4.Visible:=true;
+end;
+
+procedure TForm1.FormDblClick(Sender: TObject);
+begin
+    //Form1.label_temp.Visible:=false;
+    Form1.label_frame1.Visible:=false;
+    Form1.label_frame2.Visible:=false;
+    Form1.label_frame3.Visible:=false;
+    Form1.label_frame4.Visible:=false;
+end;
+
+End.
